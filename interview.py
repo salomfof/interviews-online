@@ -1,5 +1,6 @@
 import importlib
 import os
+import re
 import time
 from urllib.parse import unquote, urlparse
 
@@ -92,6 +93,22 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
     st.set_page_config(page_title="Interview", page_icon="🎓")
 
     config = importlib.import_module(config_module_name)
+
+    def format_for_display(text: str, is_first_assistant: bool = False) -> str:
+        display_text = text.replace("<m>", "").replace("</m>", "")
+
+        if is_first_assistant:
+            m = re.match(r"^\s*Hello[.!]?\s*(.*)$", display_text, flags=re.IGNORECASE | re.DOTALL)
+            if m:
+                rest = m.group(1)
+                # Drop one immediate repeated greeting if present.
+                rest = re.sub(r"^\s*Hello[.!]?\s*", "", rest, count=1, flags=re.IGNORECASE)
+                display_text = "Hello!\n\n" + rest
+
+        for phrase in getattr(config, "DISPLAY_BOLD_PHRASES", []):
+            if phrase in display_text:
+                display_text = display_text.replace(phrase, f"**{phrase}**")
+        return display_text
 
     def save_backup():
         try:
@@ -205,7 +222,7 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                 do_browser_redirect(quit_return_url)
                 st.stop()
 
-    for message in st.session_state.messages[1:]:
+    for i, message in enumerate(st.session_state.messages[1:], start=1):
         avatar = (
             config.AVATAR_INTERVIEWER
             if message["role"] == "assistant"
@@ -214,7 +231,11 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
 
         if not any(code in message["content"] for code in config.CLOSING_MESSAGES.keys()):
             with st.chat_message(message["role"], avatar=avatar):
-                display_text = message["content"].replace("<m>", "").replace("</m>", "")
+                is_first_assistant = i == 1 and message["role"] == "assistant"
+                display_text = format_for_display(
+                    message["content"],
+                    is_first_assistant=is_first_assistant,
+                )
                 st.markdown(display_text)
 
     if api == "openai":
@@ -254,10 +275,16 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                     if text_delta:
                         message_interviewer += text_delta
 
-                    display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                    display_text = format_for_display(
+                        message_interviewer,
+                        is_first_assistant=True,
+                    )
                     message_placeholder.markdown(display_text + "▌")
 
-                display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                display_text = format_for_display(
+                    message_interviewer,
+                    is_first_assistant=True,
+                )
                 message_placeholder.markdown(display_text)
 
         else:
@@ -272,10 +299,10 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                         if text_delta:
                             message_interviewer += text_delta
 
-                        display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                        display_text = format_for_display(message_interviewer)
                         message_placeholder.markdown(display_text + "▌")
 
-                display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                display_text = format_for_display(message_interviewer)
                 message_placeholder.markdown(display_text)
 
         st.session_state.messages.append(
@@ -309,7 +336,7 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                             message_interviewer += text_delta
 
                         if len(message_interviewer) > 5:
-                            display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                            display_text = format_for_display(message_interviewer)
                             message_placeholder.markdown(display_text + "▌")
 
                         if any(code in message_interviewer for code in config.CLOSING_MESSAGES.keys()):
@@ -323,7 +350,7 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                                 message_interviewer += text_delta
 
                             if len(message_interviewer) > 5:
-                                display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                                display_text = format_for_display(message_interviewer)
                                 message_placeholder.markdown(display_text + "▌")
 
                             if any(code in message_interviewer for code in config.CLOSING_MESSAGES.keys()):
@@ -331,7 +358,7 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                                 break
 
                 if not any(code in message_interviewer for code in config.CLOSING_MESSAGES.keys()):
-                    display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                    display_text = format_for_display(message_interviewer)
                     message_placeholder.markdown(display_text)
 
                     st.session_state.messages.append(

@@ -106,6 +106,11 @@ MODEL = "gpt-4o-2024-05-13"  # or e.g. "claude-3-5-sonnet-20240620" (OpenAI GPT 
 TEMPERATURE = None  # (None for default value)
 MAX_OUTPUT_TOKENS = 2048
 
+# Phrases forced to bold in UI display
+DISPLAY_BOLD_PHRASES = [
+    "Could you walk me through what led you to decide not to go ahead?",
+]
+
 
 # Display login screen with usernames and simple passwords for studies
 LOGINS = False
