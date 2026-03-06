@@ -2,7 +2,7 @@ import importlib
 import os
 import re
 import time
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote, urlparse, parse_qsl, urlencode, urlunparse
 
 import streamlit as st
 
@@ -44,11 +44,25 @@ def is_allowed_return_url(url: str) -> bool:
     return False
 
 
-def build_return_url(return_base: str, llm_done: int, llm_status: str) -> str:
-    sep = "&" if "?" in return_base else "?"
-    return (
-        f"{return_base}{sep}"
-        f"llm_returning=1&llm_done={llm_done}&llm_status={llm_status}"
+def build_return_url(return_url: str, llm_done: int, llm_status: str) -> str:
+    parsed = urlparse(return_url)
+
+    query_params = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    query_params["llm_returning"] = "1"
+    query_params["llm_done"] = str(llm_done)
+    query_params["llm_status"] = llm_status
+
+    new_query = urlencode(query_params)
+
+    return urlunparse(
+        (
+            parsed.scheme,
+            parsed.netloc,
+            parsed.path,
+            parsed.params,
+            new_query,
+            parsed.fragment,
+        )
     )
 
 
@@ -101,7 +115,6 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
             m = re.match(r"^\s*Hello[.!]?\s*(.*)$", display_text, flags=re.IGNORECASE | re.DOTALL)
             if m:
                 rest = m.group(1)
-                # Drop one immediate repeated greeting if present.
                 rest = re.sub(r"^\s*Hello[.!]?\s*", "", rest, count=1, flags=re.IGNORECASE)
                 display_text = "Hello!\n\n" + rest
 
@@ -131,11 +144,11 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
     else:
         raise ValueError("Model must contain 'gpt' or 'claude'")
 
-    raw_return_base = st.query_params.get("return_base", None)
-    if raw_return_base is not None:
-        return_base = unquote(str(raw_return_base).strip())
+    raw_return_url = st.query_params.get("return_url", None)
+    if raw_return_url is not None:
+        return_url = unquote(str(raw_return_url).strip())
     else:
-        return_base = None
+        return_url = None
 
     if config.LOGINS:
         pwd_correct, username = check_password()
@@ -163,8 +176,8 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    if "return_base" not in st.session_state:
-        st.session_state.return_base = return_base
+    if "return_url" not in st.session_state:
+        st.session_state.return_url = return_url
 
     if "start_time" not in st.session_state:
         st.session_state.start_time = time.time()
@@ -179,11 +192,11 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
         st.markdown("Interview already completed.")
 
         if (
-            st.session_state.return_base
-            and is_allowed_return_url(st.session_state.return_base)
+            st.session_state.return_url
+            and is_allowed_return_url(st.session_state.return_url)
         ):
             completed_return_url = build_return_url(
-                st.session_state.return_base,
+                st.session_state.return_url,
                 llm_done=1,
                 llm_status="completed",
             )
@@ -211,11 +224,11 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
             save_backup()
 
             if (
-                st.session_state.return_base
-                and is_allowed_return_url(st.session_state.return_base)
+                st.session_state.return_url
+                and is_allowed_return_url(st.session_state.return_url)
             ):
                 quit_return_url = build_return_url(
-                    st.session_state.return_base,
+                    st.session_state.return_url,
                     llm_done=1,
                     llm_status="quit",
                 )
@@ -398,11 +411,11 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                             time.sleep(0.1)
 
                         if (
-                            st.session_state.return_base
-                            and is_allowed_return_url(st.session_state.return_base)
+                            st.session_state.return_url
+                            and is_allowed_return_url(st.session_state.return_url)
                         ):
                             completed_return_url = build_return_url(
-                                st.session_state.return_base,
+                                st.session_state.return_url,
                                 llm_done=1,
                                 llm_status="completed",
                             )
