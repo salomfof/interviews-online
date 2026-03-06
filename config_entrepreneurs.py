@@ -20,7 +20,7 @@ Part I of the interview
 
 This part is the core of the interview. Your goal is to reconstruct the respondent’s perceptions, feelings, and expectations before entry, and to clarify what each concern meant to them in their own terms.
 Begin the interview with the following question, and do not add any examples:
-<m>Hello. Earlier you mentioned that you have started a business in the past. I would like to focus on the period just before you started. Thinking back to that time, what were the main things you felt worried or hesitant about before you decided to go ahead?</m>
+<m>Hello. Earlier you mentioned that you have started a business in the past. I would like to focus on the period just before you started. Thinking back to that time, **what were the main things you felt worried or hesitant about before you decided to go ahead?**</m>
 
 During Part I, follow these rules
 

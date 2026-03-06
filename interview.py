@@ -12,7 +12,6 @@ from utils import (
 )
 
 
-# Allowed domains for return redirects
 ALLOWED_RETURN_HOSTS = {
     "qualtrics.com",
     "qsf.qualtrics.com",
@@ -21,11 +20,6 @@ ALLOWED_RETURN_HOSTS = {
 
 
 def is_allowed_return_url(url: str) -> bool:
-    """
-    Validate that a redirect URL belongs to an allowed Qualtrics host.
-    Prevents malicious open redirect attacks.
-    """
-
     if not url:
         return False
 
@@ -49,12 +43,15 @@ def is_allowed_return_url(url: str) -> bool:
     return False
 
 
-def do_browser_redirect(url: str):
-    """
-    Redirect respondent back to Qualtrics.
-    Uses window.top to escape potential iframe contexts.
-    """
+def build_return_url(return_base: str, llm_done: int, llm_status: str) -> str:
+    sep = "&" if "?" in return_base else "?"
+    return (
+        f"{return_base}{sep}"
+        f"llm_returning=1&llm_done={llm_done}&llm_status={llm_status}"
+    )
 
+
+def do_browser_redirect(url: str):
     st.markdown(
         f"""
         <script>
@@ -63,17 +60,51 @@ def do_browser_redirect(url: str):
         """,
         unsafe_allow_html=True,
     )
-
     st.markdown(f"[Click here if you are not redirected automatically]({url})")
 
 
-def run_interview(config_module_name: str, default_username: str = "testaccount"):
+def load_backup_messages(username: str, backups_directory: str):
+    path = os.path.join(backups_directory, f"{username}_backup_transcript.txt")
 
+    if not os.path.exists(path):
+        return []
+
+    messages = []
+
+    try:
+        with open(path, "r") as f:
+            for line in f:
+                line = line.rstrip("\n")
+                if not line or ": " not in line:
+                    continue
+
+                role, content = line.split(": ", 1)
+
+                if role in {"system", "user", "assistant"}:
+                    messages.append({"role": role, "content": content})
+    except Exception:
+        return []
+
+    return messages
+
+
+def run_interview(config_module_name: str, default_username: str = "testaccount"):
     st.set_page_config(page_title="Interview", page_icon="🎓")
 
     config = importlib.import_module(config_module_name)
 
-    # Determine API provider
+    def save_backup():
+        try:
+            save_interview_data(
+                username=st.session_state.username,
+                transcripts_directory=config.BACKUPS_DIRECTORY,
+                times_directory=config.BACKUPS_DIRECTORY,
+                file_name_addition_transcript="_backup_transcript",
+                file_name_addition_time="_backup_time",
+            )
+        except Exception:
+            pass
+
     if "gpt" in config.MODEL.lower():
         api = "openai"
         from openai import OpenAI
@@ -83,56 +114,31 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
     else:
         raise ValueError("Model must contain 'gpt' or 'claude'")
 
-    # Extract return URL from query parameters
-    raw_return_url = st.query_params.get("return", None)
-
-    if raw_return_url is not None:
-        return_url = unquote(str(raw_return_url).strip())
+    raw_return_base = st.query_params.get("return_base", None)
+    if raw_return_base is not None:
+        return_base = unquote(str(raw_return_base).strip())
     else:
-        return_url = None
-
-    # ------------------------------------------------------------------
-    # USER IDENTIFICATION
-    # ------------------------------------------------------------------
+        return_base = None
 
     if config.LOGINS:
-
         pwd_correct, username = check_password()
-
         if not pwd_correct:
             st.stop()
-
         st.session_state.username = username
-
     else:
-
         respondent_id = st.query_params.get("id", None)
 
-        # Handle preview mode safely
         if respondent_id is None:
-
             if "username" not in st.session_state:
-
                 st.session_state.username = f"preview_{int(time.time())}"
-
-            st.warning("Preview mode detected — using temporary ID.")
+            st.warning("Preview mode detected. Using temporary ID.")
             st.caption(f"Session ID: {st.session_state.username}")
-
         else:
-
             st.session_state.username = str(respondent_id).strip()
-
-    # ------------------------------------------------------------------
-    # DIRECTORY INITIALIZATION
-    # ------------------------------------------------------------------
 
     os.makedirs(config.TRANSCRIPTS_DIRECTORY, exist_ok=True)
     os.makedirs(config.TIMES_DIRECTORY, exist_ok=True)
     os.makedirs(config.BACKUPS_DIRECTORY, exist_ok=True)
-
-    # ------------------------------------------------------------------
-    # SESSION STATE INITIALIZATION
-    # ------------------------------------------------------------------
 
     if "interview_active" not in st.session_state:
         st.session_state.interview_active = True
@@ -140,21 +146,11 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    if "return_url" not in st.session_state:
-        st.session_state.return_url = return_url
+    if "return_base" not in st.session_state:
+        st.session_state.return_base = return_base
 
     if "start_time" not in st.session_state:
-
         st.session_state.start_time = time.time()
-
-        st.session_state.start_time_file_names = time.strftime(
-            "%Y_%m_%d_%H_%M_%S",
-            time.localtime(st.session_state.start_time),
-        )
-
-    # ------------------------------------------------------------------
-    # CHECK IF INTERVIEW ALREADY COMPLETED
-    # ------------------------------------------------------------------
 
     interview_previously_completed = check_if_interview_completed(
         config.TIMES_DIRECTORY,
@@ -162,238 +158,189 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
     )
 
     if interview_previously_completed and not st.session_state.messages:
-
         st.session_state.interview_active = False
-
         st.markdown("Interview already completed.")
 
         if (
-            st.session_state.return_url
-            and is_allowed_return_url(st.session_state.return_url)
+            st.session_state.return_base
+            and is_allowed_return_url(st.session_state.return_base)
         ):
-            do_browser_redirect(st.session_state.return_url)
+            completed_return_url = build_return_url(
+                st.session_state.return_base,
+                llm_done=1,
+                llm_status="completed",
+            )
+            do_browser_redirect(completed_return_url)
 
         st.stop()
 
-    # ------------------------------------------------------------------
-    # QUIT BUTTON
-    # ------------------------------------------------------------------
+    if not st.session_state.messages:
+        resumed_messages = load_backup_messages(
+            st.session_state.username,
+            config.BACKUPS_DIRECTORY,
+        )
+        if resumed_messages:
+            st.session_state.messages = resumed_messages
 
     col1, col2 = st.columns([0.85, 0.15])
 
     with col2:
-
-        if st.session_state.interview_active and st.button(
-            "Quit",
-            help="End the interview.",
-        ):
-
+        if st.session_state.interview_active and st.button("Quit", help="End the interview."):
             st.session_state.interview_active = False
 
             quit_message = "You have cancelled the interview."
+            st.session_state.messages.append({"role": "assistant", "content": quit_message})
 
-            st.session_state.messages.append(
-                {"role": "assistant", "content": quit_message}
-            )
-
-            save_interview_data(
-                st.session_state.username,
-                config.TRANSCRIPTS_DIRECTORY,
-                config.TIMES_DIRECTORY,
-            )
+            save_backup()
 
             if (
-                st.session_state.return_url
-                and is_allowed_return_url(st.session_state.return_url)
+                st.session_state.return_base
+                and is_allowed_return_url(st.session_state.return_base)
             ):
-                do_browser_redirect(st.session_state.return_url)
-
-            st.stop()
-
-    # ------------------------------------------------------------------
-    # DISPLAY CHAT HISTORY
-    # ------------------------------------------------------------------
+                quit_return_url = build_return_url(
+                    st.session_state.return_base,
+                    llm_done=1,
+                    llm_status="quit",
+                )
+                do_browser_redirect(quit_return_url)
+                st.stop()
 
     for message in st.session_state.messages[1:]:
-
         avatar = (
             config.AVATAR_INTERVIEWER
             if message["role"] == "assistant"
             else config.AVATAR_RESPONDENT
         )
 
-        if not any(
-            code in message["content"]
-            for code in config.CLOSING_MESSAGES.keys()
-        ):
-
+        if not any(code in message["content"] for code in config.CLOSING_MESSAGES.keys()):
             with st.chat_message(message["role"], avatar=avatar):
-
                 display_text = message["content"].replace("<m>", "").replace("</m>", "")
-
                 st.markdown(display_text)
 
-    # ------------------------------------------------------------------
-    # INITIALIZE API CLIENT
-    # ------------------------------------------------------------------
-
     if api == "openai":
-
         client = OpenAI(api_key=st.secrets["API_KEY_OPENAI"])
-
-        api_kwargs = {"stream": True}
-
-    elif api == "anthropic":
-
+    else:
         client = anthropic.Anthropic(api_key=st.secrets["API_KEY_ANTHROPIC"])
 
-        api_kwargs = {"system": config.SYSTEM_PROMPT}
+    def build_api_kwargs():
+        if api == "openai":
+            api_kwargs = {"stream": True}
+        else:
+            api_kwargs = {"system": config.SYSTEM_PROMPT}
 
-    api_kwargs["messages"] = st.session_state.messages
-    api_kwargs["model"] = config.MODEL
-    api_kwargs["max_tokens"] = config.MAX_OUTPUT_TOKENS
+        api_kwargs["messages"] = st.session_state.messages
+        api_kwargs["model"] = config.MODEL
+        api_kwargs["max_tokens"] = config.MAX_OUTPUT_TOKENS
 
-    if config.TEMPERATURE is not None:
-        api_kwargs["temperature"] = config.TEMPERATURE
+        if config.TEMPERATURE is not None:
+            api_kwargs["temperature"] = config.TEMPERATURE
 
-    # ------------------------------------------------------------------
-    # FIRST MESSAGE FROM INTERVIEWER
-    # ------------------------------------------------------------------
+        return api_kwargs
 
     if not st.session_state.messages:
-
         if api == "openai":
-
             st.session_state.messages.append(
                 {"role": "system", "content": config.SYSTEM_PROMPT}
             )
 
             with st.chat_message("assistant", avatar=config.AVATAR_INTERVIEWER):
+                message_placeholder = st.empty()
+                message_interviewer = ""
+                stream = client.chat.completions.create(**build_api_kwargs())
 
-                stream = client.chat.completions.create(**api_kwargs)
+                for message in stream:
+                    text_delta = message.choices[0].delta.content
 
-                message_interviewer = st.write_stream(stream)
+                    if text_delta:
+                        message_interviewer += text_delta
+
+                    display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                    message_placeholder.markdown(display_text + "▌")
+
+                display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                message_placeholder.markdown(display_text)
 
         else:
-
             st.session_state.messages.append({"role": "user", "content": "Hi"})
 
             with st.chat_message("assistant", avatar=config.AVATAR_INTERVIEWER):
-
                 message_placeholder = st.empty()
-
                 message_interviewer = ""
 
-                with client.messages.stream(**api_kwargs) as stream:
-
+                with client.messages.stream(**build_api_kwargs()) as stream:
                     for text_delta in stream.text_stream:
-
                         if text_delta:
-
                             message_interviewer += text_delta
 
                         display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
-
                         message_placeholder.markdown(display_text + "▌")
 
                 display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
-
                 message_placeholder.markdown(display_text)
 
         st.session_state.messages.append(
             {"role": "assistant", "content": message_interviewer}
         )
 
-        save_interview_data(
-            username=st.session_state.username,
-            transcripts_directory=config.BACKUPS_DIRECTORY,
-            times_directory=config.BACKUPS_DIRECTORY,
-            file_name_addition_transcript=f"_transcript_started_{st.session_state.start_time_file_names}",
-            file_name_addition_time=f"_time_started_{st.session_state.start_time_file_names}",
-        )
-
-    # ------------------------------------------------------------------
-    # USER INPUT
-    # ------------------------------------------------------------------
+        save_backup()
 
     if st.session_state.interview_active:
-
         if message_respondent := st.chat_input("Your message here"):
-
             st.session_state.messages.append(
                 {"role": "user", "content": message_respondent}
             )
 
-            # Immediate backup save
-            try:
-
-                save_interview_data(
-                    username=st.session_state.username,
-                    transcripts_directory=config.BACKUPS_DIRECTORY,
-                    times_directory=config.BACKUPS_DIRECTORY,
-                    file_name_addition_transcript=f"_transcript_started_{st.session_state.start_time_file_names}",
-                    file_name_addition_time=f"_time_started_{st.session_state.start_time_file_names}",
-                )
-
-            except Exception:
-                pass
+            save_backup()
 
             with st.chat_message("user", avatar=config.AVATAR_RESPONDENT):
-
                 st.markdown(message_respondent)
 
             with st.chat_message("assistant", avatar=config.AVATAR_INTERVIEWER):
-
                 message_placeholder = st.empty()
-
                 message_interviewer = ""
 
-                stream = client.chat.completions.create(**api_kwargs)
+                if api == "openai":
+                    stream = client.chat.completions.create(**build_api_kwargs())
 
-                for message in stream:
+                    for message in stream:
+                        text_delta = message.choices[0].delta.content
 
-                    text_delta = message.choices[0].delta.content
+                        if text_delta:
+                            message_interviewer += text_delta
 
-                    if text_delta:
+                        if len(message_interviewer) > 5:
+                            display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                            message_placeholder.markdown(display_text + "▌")
 
-                        message_interviewer += text_delta
+                        if any(code in message_interviewer for code in config.CLOSING_MESSAGES.keys()):
+                            message_placeholder.empty()
+                            break
 
-                    if len(message_interviewer) > 5:
+                else:
+                    with client.messages.stream(**build_api_kwargs()) as stream:
+                        for text_delta in stream.text_stream:
+                            if text_delta:
+                                message_interviewer += text_delta
 
-                        display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                            if len(message_interviewer) > 5:
+                                display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
+                                message_placeholder.markdown(display_text + "▌")
 
-                        message_placeholder.markdown(display_text + "▌")
+                            if any(code in message_interviewer for code in config.CLOSING_MESSAGES.keys()):
+                                message_placeholder.empty()
+                                break
 
-                    if any(
-                        code in message_interviewer
-                        for code in config.CLOSING_MESSAGES.keys()
-                    ):
-
-                        message_placeholder.empty()
-
-                        break
-
-                if not any(
-                    code in message_interviewer
-                    for code in config.CLOSING_MESSAGES.keys()
-                ):
-
+                if not any(code in message_interviewer for code in config.CLOSING_MESSAGES.keys()):
                     display_text = message_interviewer.replace("<m>", "").replace("</m>", "")
-
                     message_placeholder.markdown(display_text)
 
                     st.session_state.messages.append(
                         {"role": "assistant", "content": message_interviewer}
                     )
-
-    # ------------------------------------------------------------------
-    # HANDLE INTERVIEW COMPLETION
-    # ------------------------------------------------------------------
+                    save_backup()
 
                 for code in config.CLOSING_MESSAGES.keys():
-
                     if code in message_interviewer:
-
                         st.session_state.interview_active = False
 
                         closing_message = config.CLOSING_MESSAGES[code]
@@ -404,13 +351,11 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                             {"role": "assistant", "content": closing_message}
                         )
 
-                        # Safe final save with timeout
                         max_attempts = 30
                         attempt = 0
                         completed = False
 
                         while not completed and attempt < max_attempts:
-
                             save_interview_data(
                                 username=st.session_state.username,
                                 transcripts_directory=config.TRANSCRIPTS_DIRECTORY,
@@ -426,10 +371,14 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                             time.sleep(0.1)
 
                         if (
-                            st.session_state.return_url
-                            and is_allowed_return_url(st.session_state.return_url)
+                            st.session_state.return_base
+                            and is_allowed_return_url(st.session_state.return_base)
                         ):
-
-                            do_browser_redirect(st.session_state.return_url)
+                            completed_return_url = build_return_url(
+                                st.session_state.return_base,
+                                llm_done=1,
+                                llm_status="completed",
+                            )
+                            do_browser_redirect(completed_return_url)
 
                         st.stop()

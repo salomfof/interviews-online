@@ -19,7 +19,7 @@ Part I of the interview
 
 This part is the core. Your goal is to reconstruct the respondent’s decision process at the time, and clarify what each stated reason meant to them.
 Begin with the following question, with no examples:
-<m>Hello. Earlier you mentioned that you had thought seriously about starting a business, but did not go ahead. I would like to understand how you saw that decision at the time. Could you walk me through what led you to decide not to go ahead?</m>
+<m>Hello. Earlier you mentioned that you had thought seriously about starting a business, but did not go ahead. I would like to understand how you saw that decision at the time. **Could you walk me through what led you to decide not to go ahead?**</m>
 
 During Part I
 
@@ -120,4 +120,3 @@ BACKUPS_DIRECTORY = "../data/backups/leavers/"
 # Avatars displayed in the chat interface
 AVATAR_INTERVIEWER = "\U0001F393"
 AVATAR_RESPONDENT = "\U0001F9D1\U0000200D\U0001F4BB"
-

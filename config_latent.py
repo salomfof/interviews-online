@@ -19,7 +19,7 @@ Part I of the interview
 
 This part is the core. Your goal is to understand what keeps the respondent from exploring entrepreneurship, and what those factors mean to them.
 Begin with the following question, with no examples:
-<m>Hello. Earlier you mentioned that you would prefer to work for yourself, but that you have not seriously pursued starting a business so far. I would like to understand how you see that gap. In your own words, what are the main things that have kept you from seriously exploring starting a business?</m>
+<m>Hello. Earlier you mentioned that you would prefer to work for yourself, but that you have not seriously pursued starting a business so far. I would like to understand how you see that gap. In your own words, **what are the main things that have kept you from seriously exploring starting a business**?</m>
 
 During Part I
 
