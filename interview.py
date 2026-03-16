@@ -50,20 +50,22 @@ def build_return_url(return_url: str, llm_done: int, llm_status: str, force_comp
 
 
 def do_browser_redirect(url: str):
-    # CHANGED: components.html executes JS reliably; target="_top" keeps same tab
     components.html(
         f"""
-        <script>
-            window.top.location.href = {url!r};
-        </script>
-        <p style="font-family:sans-serif; font-size:15px;">
-            If you are not redirected automatically,
-            <a href="{url}" target="_top">click here to return to the survey</a>.
-        </p>
+        <div style="text-align:center; padding:20px; font-family:sans-serif;">
+            <p style="font-size:16px; margin-bottom:20px;">
+                Your interview is complete. Please click below to return to the survey.
+            </p>
+            <a href="{url}" target="_top"
+               style="display:inline-block; background:#c0392b; color:white;
+                      padding:14px 32px; font-size:16px; border-radius:6px;
+                      text-decoration:none; font-weight:bold;">
+                &#8594; Return to Survey
+            </a>
+        </div>
         """,
-        height=60,
+        height=140,
     )
-
 
 def load_backup_messages(username: str, backups_directory: str):
     path = os.path.join(backups_directory, f"{username}_backup_transcript.txt")
