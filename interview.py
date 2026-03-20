@@ -237,7 +237,10 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
             api_kwargs = {"system": config.SYSTEM_PROMPT}
         api_kwargs["messages"] = st.session_state.messages
         api_kwargs["model"] = config.MODEL
-        api_kwargs["max_tokens"] = config.MAX_OUTPUT_TOKENS
+        if api == "openai":
+            api_kwargs["max_completion_tokens"] = config.MAX_OUTPUT_TOKENS
+        else:
+            api_kwargs["max_tokens"] = config.MAX_OUTPUT_TOKENS
         if config.TEMPERATURE is not None:
             api_kwargs["temperature"] = config.TEMPERATURE
         return api_kwargs
