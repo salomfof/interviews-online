@@ -245,7 +245,7 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
     if not st.session_state.messages:
         if api == "openai":
             st.session_state.messages.append(
-                {"role": "system", "content": config.SYSTEM_PROMPT}
+                {"role": "developer", "content": config.SYSTEM_PROMPT}
             )
             with st.chat_message("assistant", avatar=config.AVATAR_INTERVIEWER):
                 message_placeholder = st.empty()
