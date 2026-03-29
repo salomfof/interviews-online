@@ -9,11 +9,8 @@ from azure.storage.blob import BlobServiceClient
 
 
 def get_blob_service_client():
-    """Return a BlobServiceClient using the connection string from secrets."""
-    conn_str = os.environ.get(
-        "AZURE_STORAGE_CONNECTION_STRING",
-        st.secrets.get("AZURE_STORAGE_CONNECTION_STRING", ""),
-    )
+    """Return a BlobServiceClient using the connection string from environment variables."""
+    conn_str = os.environ.get("AZURE_STORAGE_CONNECTION_STRING", "")
     if not conn_str:
         return None
     try:

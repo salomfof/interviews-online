@@ -227,9 +227,9 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                 st.markdown(display_text)
 
     if api == "openai":
-        client = OpenAI(api_key=os.environ.get("API_KEY_OPENAI", st.secrets.get("API_KEY_OPENAI", "")))
+        client = OpenAI(api_key=os.environ["API_KEY_OPENAI"])
     else:
-        client = anthropic.Anthropic(api_key=os.environ.get("API_KEY_ANTHROPIC", st.secrets.get("API_KEY_ANTHROPIC", "")))
+        client = anthropic.Anthropic(api_key=os.environ["API_KEY_ANTHROPIC"])
 
     def build_api_kwargs():
         if api == "openai":
