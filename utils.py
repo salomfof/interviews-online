@@ -2,6 +2,37 @@ import streamlit as st
 import hmac
 import time
 import os
+import io
+
+# Azure Blob Storage
+from azure.storage.blob import BlobServiceClient
+
+
+def get_blob_service_client():
+    """Return a BlobServiceClient using the connection string from secrets."""
+    conn_str = os.environ.get(
+        "AZURE_STORAGE_CONNECTION_STRING",
+        st.secrets.get("AZURE_STORAGE_CONNECTION_STRING", ""),
+    )
+    if not conn_str:
+        return None
+    try:
+        return BlobServiceClient.from_connection_string(conn_str)
+    except Exception:
+        return None
+
+
+def upload_to_blob(container_name: str, blob_name: str, content: str):
+    """Upload a string to Azure Blob Storage. Fails silently if not configured."""
+    client = get_blob_service_client()
+    if client is None:
+        return
+    try:
+        blob_client = client.get_blob_client(container=container_name, blob=blob_name)
+        blob_client.upload_blob(content, overwrite=True)
+    except Exception as e:
+        # Log but don't crash the interview
+        print(f"Blob upload error: {e}")
 
 
 # Password screen for dashboard (note: only very basic authentication!)
@@ -65,25 +96,44 @@ def save_interview_data(
     times_directory,
     file_name_addition_transcript="",
     file_name_addition_time="",
+    blob_container=None,
 ):
-    """Write interview data (transcript and time) to disk."""
+    """Write interview data (transcript and time) to disk and optionally to Azure Blob Storage."""
 
-    # Store chat transcript
-    with open(
-        os.path.join(
-            transcripts_directory, f"{username}{file_name_addition_transcript}.txt"
-        ),
-        "w",
-    ) as t:
-        for message in st.session_state.messages:
-            t.write(f"{message['role']}: {message['content']}\n")
+    # Build transcript content
+    transcript_content = ""
+    for message in st.session_state.messages:
+        transcript_content += f"{message['role']}: {message['content']}\n"
 
-    # Store file with start time and duration of interview
-    with open(
-        os.path.join(times_directory, f"{username}{file_name_addition_time}.txt"),
-        "w",
-    ) as d:
-        duration = (time.time() - st.session_state.start_time) / 60
-        d.write(
-            f"Start time (UTC): {time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(st.session_state.start_time))}\nInterview duration (minutes): {duration:.2f}"
+    # Build time content
+    duration = (time.time() - st.session_state.start_time) / 60
+    time_content = (
+        f"Start time (UTC): {time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(st.session_state.start_time))}\n"
+        f"Interview duration (minutes): {duration:.2f}"
+    )
+
+    # Save to local disk
+    os.makedirs(transcripts_directory, exist_ok=True)
+    os.makedirs(times_directory, exist_ok=True)
+
+    transcript_filename = f"{username}{file_name_addition_transcript}.txt"
+    time_filename = f"{username}{file_name_addition_time}.txt"
+
+    with open(os.path.join(transcripts_directory, transcript_filename), "w") as t:
+        t.write(transcript_content)
+
+    with open(os.path.join(times_directory, time_filename), "w") as d:
+        d.write(time_content)
+
+    # Upload to Azure Blob Storage
+    if blob_container:
+        upload_to_blob(
+            blob_container,
+            f"transcripts/{transcript_filename}",
+            transcript_content,
+        )
+        upload_to_blob(
+            blob_container,
+            f"times/{time_filename}",
+            time_content,
         )

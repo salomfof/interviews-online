@@ -1,7 +1,6 @@
-[browser]
-# Disable streamlit collecting user statistics, https://streamlit.io/privacy-policy
-gatherUsageStats = false
+[ui]
+hideSidebarNav = true
 
-[client]
-# Minimal appearance of user interface
-toolbarMode = "minimal"
+[server]
+port = 8000
+address = "0.0.0.0"

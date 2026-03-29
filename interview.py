@@ -5,6 +5,7 @@ import time
 from urllib.parse import unquote, urlparse
 
 import streamlit as st
+import streamlit.components.v1 as components  # MOVED TO TOP
 
 from utils import (
     check_password,
@@ -49,22 +50,21 @@ def build_return_url(return_url: str, llm_done: int, llm_status: str, force_comp
 
 
 def do_browser_redirect(url: str):
-    st.markdown("---")
-    st.markdown(
+    components.html(
         f"""
-        <div style="text-align:center; padding:40px 20px; font-family:sans-serif;">
-            <p style="font-size:18px; margin-bottom:24px;">
+        <div style="text-align:center; padding:20px; font-family:sans-serif;">
+            <p style="font-size:16px; margin-bottom:20px;">
                 Your interview is complete. Please click below to return to the survey.
             </p>
             <a href="{url}" target="_top"
                style="display:inline-block; background:#c0392b; color:white;
-                      padding:16px 40px; font-size:18px; border-radius:6px;
+                      padding:14px 32px; font-size:16px; border-radius:6px;
                       text-decoration:none; font-weight:bold;">
                 &#8594; Return to Survey
             </a>
         </div>
         """,
-        unsafe_allow_html=True,
+        height=140,
     )
 
 def load_backup_messages(username: str, backups_directory: str):
@@ -86,7 +86,7 @@ def load_backup_messages(username: str, backups_directory: str):
     return messages
 
 
-def run_interview(config_module_name: str, default_username: str = "testaccount"):
+def run_interview(config_module_name: str, default_username: str = "testaccount", blob_container: str = None):
     st.set_page_config(page_title="Interview", page_icon="🎓")
 
     config = importlib.import_module(config_module_name)
@@ -112,6 +112,7 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                 times_directory=config.BACKUPS_DIRECTORY,
                 file_name_addition_transcript="_backup_transcript",
                 file_name_addition_time="_backup_time",
+                blob_container=blob_container,
             )
         except Exception:
             pass
@@ -344,6 +345,7 @@ def run_interview(config_module_name: str, default_username: str = "testaccount"
                                 username=st.session_state.username,
                                 transcripts_directory=config.TRANSCRIPTS_DIRECTORY,
                                 times_directory=config.TIMES_DIRECTORY,
+                                blob_container=blob_container,
                             )
                             completed = check_if_interview_completed(
                                 config.TIMES_DIRECTORY,
