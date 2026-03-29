@@ -1,5 +1,5 @@
-[ui]
-hideSidebarNav = true
+[client]
+showSidebarNavigation = false
 
 [server]
 port = 8000
