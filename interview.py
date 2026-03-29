@@ -87,7 +87,19 @@ def load_backup_messages(username: str, backups_directory: str):
 
 
 def run_interview(config_module_name: str, default_username: str = "testaccount", blob_container: str = None):
-    st.set_page_config(page_title="Interview", page_icon="🎓")
+    st.set_page_config(page_title="Interview", page_icon="🎓", initial_sidebar_state="collapsed")
+
+    # Hide sidebar completely so respondents only see their interview
+    st.markdown(
+        """
+        <style>
+            [data-testid="stSidebar"] { display: none; }
+            [data-testid="stSidebarNav"] { display: none; }
+            [data-testid="collapsedControl"] { display: none; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
     config = importlib.import_module(config_module_name)
 
