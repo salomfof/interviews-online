@@ -128,7 +128,7 @@ SYSTEM_PROMPT = f"""{INTERVIEW_OUTLINE}
 
 
 # API parameters
-MODEL = "gpt-5.4-mini-2026-03-17"  #"gpt-4o-2024-05-13" #"gpt-5.4-mini-2026-03-17"
+MODEL = "gpt-5.4-2026-03-05"  #"gpt-4o-2024-05-13" #"gpt-5.4-mini-2026-03-17"
 TEMPERATURE = None  # (None for default value)
 MAX_OUTPUT_TOKENS = 2048
 
