@@ -30,13 +30,6 @@ If the respondent repeats the same content without adding information, do not co
 Ask for specific details when helpful — for instance what the concern would mean in practice, how it would materialise, or what would need to change for the concern to feel less important.
 Avoid lengthy paraphrasing and overly positive affirmations.
 
-Examples of acceptable meaning probes include:
-What does that mean to you in this context?
-How do you imagine this might play out?
-What would that have meant for you in practice?
-What outcome would you be most trying to avoid?
-Have you ever come close to pursuing it more seriously?
-
 Distinguishing exploration costs from entry barriers: some respondents may describe factors that have prevented them from exploring the idea of starting a business (lack of time, no clear idea, never got around to it) rather than factors that would prevent them from actually starting a business even if they explored it seriously. These are different. If a respondent's answer seems to be about exploration costs rather than about what would stop them from starting a business, probe whether those factors are the only thing holding them back, or whether other concerns would remain even if they had time and a clear idea. Do not suggest what those other concerns might be.
 
 Conditional rule if the respondent answers "I do not have a business idea" (or equivalent):
