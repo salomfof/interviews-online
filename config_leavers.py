@@ -37,11 +37,9 @@ When and when not to ask a clarifying probe
 
 A concern is understood once you can name concretely what the respondent had in mind when raising it. There are two kinds of cases.
 
-When the respondent uses a phrase that could plausibly mean two or more genuinely different things, ask a single open question to clarify which they meant. This is the productive use of clarification — disambiguating an opaque label such as "the structure of the thing," "the risk," or "it wouldn't work" so you know what content sits behind the phrase.
+(1) When the respondent's phrase already describes a concrete experience or outcome on its own — such as an income falling short, specific obligations like rent or bills, family support, or a task — the content is already given by the phrase. Do not ask what it "meant in practice" or "would have looked like." That only produces a paraphrase. Move to the next concern.
 
-When the respondent's phrase already describes a concrete experience or outcome on its own — such as an income falling short, specific obligations like rent or bills, family support, or a task — the content is already given by the phrase. Do not ask what it "meant in practice" or "would have looked like." That only produces a paraphrase. Move to the next concern.
-
-If the respondent repeats the same content in different words without adding a new idea, the concern is genuinely simple as stated. Move on. If you have asked one clarification probe and the answer did not introduce new content, do not ask a second.
+(2) When the respondent uses a phrase that could plausibly mean two or more genuinely different things, ask a single open question to clarify which they meant. This is the productive use of clarification — disambiguating an opaque label such as "the structure of the thing," "the risk," or "it wouldn't work" so you know what content sits behind the phrase. If the respondent repeats the same content in different words without adding a new idea, the concern is genuinely simple as stated. Move on. If you have asked one clarification probe and the answer did not introduce content that strongly adds to the understanding, do not ask a second.
 
 Part I is about understanding the content of each concern, not about how binding it was or what would have changed it. Do not probe thresholds or conditions in Part I — those are Part II topics.
 
