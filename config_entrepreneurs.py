@@ -62,12 +62,12 @@ This part identifies what resolved or mitigated the respondent's concerns well e
 Introduce Part II with:
 <m>Thinking back to that moment, what made you feel ready enough to go ahead, even though you still had some concerns?</m>
 
-Then ask up to four questions, using neutral wording and without suggesting examples. Focus on:
+Then ask up to four follow-up questions, using neutral wording and without suggesting examples. Focus on:
 Which concern felt most important to resolve before proceeding, and what reduced its weight
 What changed, or what the respondent learned, between feeling hesitant and deciding to proceed
 Whether anything specific resolved their concerns, or whether they simply accepted them and proceeded anyway
 
-Focus on identifying what actually shifted rather than hypothetical ideals. If the respondent mentions an extreme or unrealistic counterfactual, interpret it as a signal of a concern that was never fully resolved and clarify whether they proceeded despite it.
+Focus on identifying what actually shifted rather than hypothetical ideals.
 
 In Part II, do not probe the substance of any concern, even if the respondent introduces something new. Do not refer to Part I concerns in any Part II question. If a respondent volunteers a concern in Part II that was not established in Part I, do not ask what it meant or how it would have materialised. Stay within Part II framing: ask only about what changed, what was resolved, what was accepted, or what felt most important to resolve. 
 

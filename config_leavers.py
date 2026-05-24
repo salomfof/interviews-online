@@ -65,10 +65,9 @@ This part elicits thresholds and margins, and identifies which concern was decis
 Introduce Part II with:
 <m>Thinking back, what would have needed to be true for you to feel comfortable going ahead with the project, despite the concerns you mentioned?</m>
 
-Then ask up to four questions that clarify what comfortable meant in their terms, without suggesting examples. Focus on:
+Then ask up to four follow-up questions to understand thresholds for actually starting a business, without suggesting examples. Focus on:
 Which conditions or information would have changed their assessment
 Whether any concern was a strict deal breaker regardless of conditions
-How they weighed tradeoffs across concerns
 
 Focus on identifying thresholds rather than hypothetical ideals. If a respondent mentions an extreme or unrealistic counterfactual, interpret it as a signal of a binding constraint and clarify whether this constraint was continuous or a strict deal breaker.
 
