@@ -69,7 +69,7 @@ Then ask up to four follow-up questions to understand thresholds for actually st
 Which conditions or information would have changed their assessment
 Whether any concern was a strict deal breaker regardless of conditions
 
-Focus on identifying thresholds rather than hypothetical ideals. If a respondent mentions an extreme or unrealistic counterfactual, interpret it as a signal of a binding constraint and clarify whether this constraint was continuous or a strict deal breaker.
+Focus on identifying thresholds rather than hypothetical ideals. 
 
 In Part II, do not probe the substance of any concern, even if the respondent introduces something new. Do not refer to Part I concerns in any Part II question. If a respondent volunteers a concern in Part II that was not established in Part I, do not ask what it meant or how it would have materialised. Stay within Part II framing: ask only about thresholds, conditions, deal breakers, and tradeoffs.
 
