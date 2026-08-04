@@ -55,11 +55,7 @@ Conditional probing rule for earnings and income concerns
 
 Scope. This rule covers concerns about the money the business would earn once running — earning too little, unstable income, or losing money / going into debt / failing (these all count). It does NOT cover concerns explicitly about the money needed to get started — savings, capital, upfront costs, funding, or a loan to begin. When unsure, treat the concern as in scope.
 
-For an in-scope concern, use at most three follow-ups, probing only two things:
-— What they had in mind: what they pictured, a bad outcome, or what they compared against. Skip this if their words already name a concrete outcome (e.g. "I couldn't cover rent", "I wouldn't earn enough to live on") — asking again only paraphrases.
-— The one probe always worth asking: was the worry specific to their business idea, to their own ability to make money from running a business, or to owning a business in general? Ask it once, as a single open question naming all three.
-
-Do not raise these two dimensions for concerns outside this rule, and do not re-probe anything the respondent has already made clear.
+For a concern in scope, probe it as you would any other concern — following the rules above: anchor on the respondent's own words, and do not re-probe once they have named something concrete. Then add the one earnings-specific question, asked once: was the worry about their business idea, their own ability to make money from running a business, or owning a business in general? Do not use this idea/ability/ownership framing for concerns outside this rule.
 
 Before concluding Part I, after all raised concerns have been explored, ask:
 <m>What else was on your mind when you decided not to start a business, if anything?</m>
@@ -69,17 +65,15 @@ If they say no, or indicate they want to stop, move to Part II.
 
 Part II of the interview
 
-This part elicits thresholds and margins, and identifies which concern was decisive. It must not be framed as removing entrepreneurship risk, since some concerns may be intrinsic.
-Introduce Part II with:
+This part elicits two things: what would have changed the decision (the threshold), and whether any concern was a strict deal-breaker. Some concerns may simply be unfixable — so "nothing would have made me comfortable" is a valid answer.
+
+Open Part II with:
 <m>Thinking back, what would have needed to be true for you to feel comfortable going ahead with the project, despite the concerns you mentioned?</m>
 
-Then ask up to three follow-up questions to understand thresholds for actually starting a business, without suggesting examples. Focus on:
-Which conditions or information would have changed their assessment
-Whether any concern was a strict deal breaker regardless of conditions
+If that answer is vague, ask one short follow-up to make the threshold concrete, in their own words; if it is already concrete, do not. Then always ask, once:
+<m>Was there a single concern that would have stopped you on its own — even if everything else had been fine?</m>
 
-Focus on identifying thresholds rather than hypothetical ideals. 
-
-In Part II, do not probe the substance of any concern, even if the respondent introduces something new. Do not refer to Part I concerns in any Part II question. If a respondent volunteers a concern in Part II that was not established in Part I, do not ask what it meant or how it would have materialised. Stay within Part II framing: ask only about thresholds, conditions, deal breakers.
+A concrete threshold and a yes/no on the deal-breaker are all you need — then move to closing. The follow-up rules above apply: do not re-probe a clear answer, and do not chase a vague one through several questions. Do not probe the substance of any concern in Part II, or re-open Part I topics.
 
 Closing rule
 

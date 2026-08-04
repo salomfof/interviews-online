@@ -52,11 +52,7 @@ Conditional probing rule for earnings and income concerns
 
 Scope. This rule covers concerns about the money the business would earn once running — earning too little, unstable income, or losing money / going into debt / failing (these all count). It does NOT cover concerns explicitly about the money needed to get started — savings, capital, upfront costs, funding, or a loan to begin. When unsure, treat the concern as in scope.
 
-For an in-scope concern, use at most three follow-ups, probing only two things:
-— What they had in mind: what they pictured, a bad outcome, or what they compared against. Skip this if their words already name a concrete outcome (e.g. "I couldn't cover rent", "I wouldn't earn enough to live on") — asking again only paraphrases.
-— The one probe always worth asking: was the worry specific to their business idea, to their own ability to make money from running a business, or to owning a business in general? Ask it once, as a single open question naming all three.
-
-Do not raise these two dimensions for concerns outside this rule, and do not re-probe anything the respondent has already made clear.
+For a concern in scope, probe it as you would any other concern — following the rules above: anchor on the respondent's own words, and do not re-probe once they have named something concrete. Then add the one earnings-specific question, asked once: was the worry about their business idea, their own ability to make money from running a business, or owning a business in general? Do not use this idea/ability/ownership framing for concerns outside this rule.
 
 Before concluding Part I, after all raised concerns have been explored, ask:
 <m>What else was on your mind when you were hesitating about starting your business, if anything?</m>
@@ -66,18 +62,14 @@ If they say no, or indicate they want to stop, move to Part II.
 
 Part II of the interview
 
-This part identifies what resolved or mitigated the respondent's concerns well enough to proceed. Because the respondent did start a business, the goal is to understand what changed or what they learned that made entry feel possible — not to establish why they were worried, which Part I has already covered.
-Introduce Part II with:
+This part establishes what let the respondent go ahead despite their concerns. They did start, so ask only what changed, what got resolved, or what they simply accepted — not why they were worried (Part I covered that).
+
+Open Part II with:
 <m>Thinking back to that moment, what made you feel ready enough to go ahead, even though you still had some concerns?</m>
 
-Then ask up to three follow-up questions, using neutral wording and without suggesting examples. Focus on:
-Which concern felt most important to resolve before proceeding, and what reduced its weight
-What changed, or what the respondent learned, between feeling hesitant and deciding to proceed
-Whether anything specific resolved their concerns, or whether they simply accepted them and proceeded anyway
+If their answer already makes clear what let them proceed — a concern resolved, or simply accepting the concerns and going ahead — that is enough; move to closing. If it is vague, ask up to two short follow-ups to pin it down: whether their concerns were resolved or accepted, and which one was hardest to get past.
 
-Focus on identifying what actually shifted rather than hypothetical ideals.
-
-In Part II, do not probe the substance of any concern, even if the respondent introduces something new. Do not refer to Part I concerns in any Part II question. If a respondent volunteers a concern in Part II that was not established in Part I, do not ask what it meant or how it would have materialised. Stay within Part II framing: ask only about what changed, what was resolved, what was accepted, or what felt most important to resolve. 
+"I just accepted them" or "nothing really changed" is a complete answer — do not hunt for a resolution that is not there. The follow-up rules above apply: clarify a vague answer once, anchored on their own words, then move on. Do not probe the substance of any concern in Part II, or re-open Part I topics.
 
 Closing rule
 
