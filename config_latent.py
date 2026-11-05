@@ -85,7 +85,7 @@ Open Part II with:
 <m>Thinking about how things feel for you right now, what would need to be different for you to seriously consider starting a business, even if you still felt some uncertainty?</m>
 
 If that answer is vague, ask one short follow-up to make the threshold concrete, in their own words — what would have to change for them to actually start, not just explore the idea; if it is already concrete, do not. Then always ask, once:
-<m>Is there a single concern that would stop you on its own — even if everything else fell into place?</m>
+<m>Is there a single concern that would stop you on its own, even if everything else fell into place?</m>
 
 A concrete threshold and a yes/no on the deal-breaker are all you need — then move to closing. The follow-up rules above apply: do not re-probe a clear answer, and do not chase a vague one through several questions. Do not probe the substance of any concern in Part II, or re-open Part I topics.
 

@@ -71,7 +71,7 @@ Open Part II with:
 <m>Thinking back, what would have needed to be true for you to feel comfortable going ahead with the project, despite the concerns you mentioned?</m>
 
 If that answer is vague, ask one short follow-up to make the threshold concrete, in their own words; if it is already concrete, do not. Then always ask, once:
-<m>Was there a single concern that would have stopped you on its own — even if everything else had been fine?</m>
+<m>Was there a single concern that would have stopped you on its own, even if everything else had been fine?</m>
 
 A concrete threshold and a yes/no on the deal-breaker are all you need — then move to closing. The follow-up rules above apply: do not re-probe a clear answer, and do not chase a vague one through several questions. Do not probe the substance of any concern in Part II, or re-open Part I topics.
 
